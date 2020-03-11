@@ -7,17 +7,28 @@ services:
       - "9200:9200"
     environment:
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
     volumes:
       - ./elasticsearch/data:/usr/share/elasticsearch/data:rw              # Persistence data
+    deploy:
+      resources:
+        reservations:
+          memory: 2G
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.2.0
     ports:
       - "25826:25826"
       - "5044:5044"
+    environment:
+      - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro                # Pipeline configuration
     restart: on-failure
+    deploy:
+      resources:
+        reservations:
+          memory: 2G
     depends_on:
       - elasticsearch
 
